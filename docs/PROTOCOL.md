@@ -12,7 +12,7 @@ Shared by **dsh-mac-companion** and **dsh-device-bridge**.
 ### GET /v1/health
 
 ```json
-{ "ok": true, "kind": "mac", "version": "0.1.0", "capabilities": ["notify", "shortcut", "clipboard_read"] }
+{ "ok": true, "kind": "mac", "version": "0.1.1", "capabilities": ["notify", "shortcut", "clipboard_read", "clipboard_write"] }
 ```
 
 `kind` examples: `mac`, `phone`, `aix-agent`, `generic`.

@@ -10,5 +10,6 @@
           - notify
           - shortcut
           - clipboard_read
+          - clipboard_write
           - health
         devices: []

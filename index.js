@@ -35,7 +35,7 @@ export function apply(ctx, config = {}) {
   ctx.systemPrompt.section({
     name: "tool:mac-companion",
     order: 141,
-    text: "dsh-mac-companion calls a macOS companion daemon over HTTP (/v1/health, /v1/invoke). Start companion/server.py on the Mac. Prefer mac_companion_status before notify/shortcut.",
+    text: "dsh-mac-companion calls a macOS companion daemon over HTTP (/v1/health, /v1/invoke). Start companion/server.py on the Mac. Prefer mac_companion_status before notify/shortcut/clipboard.",
   });
 
   ctx.tools.register({
@@ -141,5 +141,73 @@ export function apply(ctx, config = {}) {
     },
     presentCall: () => ({ card: "generic", title: "mac shortcut" }),
     presentResult: (_a, r) => ({ card: "generic", title: "mac shortcut", content: r.content }),
+  });
+
+  ctx.tools.register({
+    name: "mac_clipboard_read",
+    description: "Read macOS clipboard text via companion action=clipboard_read.",
+    parameters: {
+      type: "object",
+      additionalProperties: false,
+      properties: { deviceId: { type: "string" } },
+    },
+    output: {
+      schema: { type: "object", additionalProperties: true },
+      render: (_a, v) => [
+        { type: "text", text: v.ok === false ? v.error : v.result?.text || JSON.stringify(v) },
+      ],
+    },
+    timeoutMs,
+    isConcurrencySafe: () => true,
+    async execute(args) {
+      try {
+        const device = resolveDevice(devices, args.deviceId);
+        return await invoke(device, { action: "clipboard_read", timeoutMs, allowActions });
+      } catch (e) {
+        return { ok: false, error: e instanceof Error ? e.message : String(e) };
+      }
+    },
+    presentCall: () => ({ card: "generic", title: "mac clipboard read" }),
+    presentResult: (_a, r) => ({ card: "generic", title: "mac clipboard read", content: r.content }),
+  });
+
+  ctx.tools.register({
+    name: "mac_clipboard_write",
+    description: "Set macOS clipboard text via companion (requires confirm=true).",
+    parameters: {
+      type: "object",
+      additionalProperties: false,
+      required: ["text"],
+      properties: {
+        deviceId: { type: "string" },
+        text: { type: "string" },
+        confirm: { type: "boolean" },
+      },
+    },
+    output: {
+      schema: { type: "object", additionalProperties: true },
+      render: (_a, v) => [{ type: "text", text: JSON.stringify(v, null, 2) }],
+    },
+    timeoutMs,
+    isConcurrencySafe: () => true,
+    async execute(args) {
+      try {
+        if (args.confirm !== true) {
+          return { ok: false, error: "confirm=true required for clipboard_write" };
+        }
+        const device = resolveDevice(devices, args.deviceId);
+        return await invoke(device, {
+          action: "clipboard_write",
+          args: { text: String(args.text ?? "") },
+          confirm: true,
+          timeoutMs,
+          allowActions,
+        });
+      } catch (e) {
+        return { ok: false, error: e instanceof Error ? e.message : String(e) };
+      }
+    },
+    presentCall: () => ({ card: "generic", title: "mac clipboard write" }),
+    presentResult: (_a, r) => ({ card: "generic", title: "mac clipboard write", content: r.content }),
   });
 }

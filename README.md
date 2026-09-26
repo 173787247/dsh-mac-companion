@@ -22,6 +22,8 @@ dsh（多半在 WSL）通过 HTTP 调用 **Mac 上的 Companion**，接入通知
 | `mac_companion_status` | GET /v1/health |
 | `mac_notify` | 系统通知 |
 | `mac_run_shortcut` | 跑 Shortcuts（需 confirm=true） |
+| `mac_clipboard_read` | 读剪贴板文本 |
+| `mac_clipboard_write` | 写剪贴板（需 confirm=true） |
 
 ## Mac 上启动 Companion
 

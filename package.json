@@ -1,6 +1,6 @@
 {
   "name": "dsh-mac-companion",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DeepSeek Harness plugin: talk to a macOS companion daemon (notify/Shortcuts/clipboard).",
   "license": "MIT",
   "repository": { "type": "git", "url": "https://github.com/173787247/dsh-mac-companion.git" },
@@ -10,5 +10,8 @@
   "scripts": { "test": "node --test test/*.test.js" },
   "files": ["index.js", "lib", "cordis.patch.yml", "README.md", "README.en.md", "README.zh.md", "LICENSE", "CHANGELOG.md", "examples", "companion", "docs"],
   "keywords": ["dsh-plugin", "deepseek-harness", "macos", "companion"],
+  "dependencies": {
+    "dsh-wsl-common": "github:173787247/dsh-wsl-common"
+  },
   "dsh": { "bundle": { "patch": "./cordis.patch.yml" } }
 }

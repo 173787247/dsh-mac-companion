@@ -12,7 +12,7 @@ import subprocess
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-CAPABILITIES = ["notify", "shortcut", "clipboard_read", "health"]
+CAPABILITIES = ["notify", "shortcut", "clipboard_read", "clipboard_write", "health"]
 
 
 def run_osascript(script: str) -> str:
@@ -95,6 +95,14 @@ class Handler(BaseHTTPRequestHandler):
             if action == "clipboard_read":
                 text = run_osascript("the clipboard as text")
                 return self._json(200, {"ok": True, "result": {"text": text[:8000]}})
+            if action == "clipboard_write":
+                if not confirm:
+                    return self._json(400, {"ok": False, "error": "confirm=true required"})
+                raw = str((args or {}).get("text") or "")[:8000]
+                # Escape for AppleScript string literal
+                esc = raw.replace("\\", "\\\\").replace('"', '\\"')
+                run_osascript(f'set the clipboard to "{esc}"')
+                return self._json(200, {"ok": True, "result": {"chars": len(raw)}})
             if action == "health":
                 return self._json(200, {"ok": True, "result": {"capabilities": CAPABILITIES}})
             return self._json(400, {"ok": False, "error": f"unknown action: {action}"})
