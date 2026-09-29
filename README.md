@@ -12,7 +12,7 @@ dsh（多半在 WSL）通过 HTTP 调用 **Mac 上的 Companion**，接入通知
 |------|----|
 | **插件** | `dsh-mac-companion` **0.1.0** |
 | **最低 dsh** | ≥ **0.1.2** |
-| **最新验证** | 以 [dsh-wsl-kit 兼容性](https://github.com/173787247/dsh-wsl-kit#compatibility-2026-09) 为准（当前 **`0.1.7-alpha.2`**） |
+| **最新验证** | 以 [dsh-wsl-kit 兼容性](https://github.com/173787247/dsh-wsl-kit#compatibility-2026-09) 为准（当前 **`0.2.0-rc.2`**） |
 | **套件档位** | 可选（远程桥接） |
 
 ## 工具
